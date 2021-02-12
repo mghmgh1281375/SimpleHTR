@@ -25,10 +25,10 @@ class Batch:
         self.gtTexts = gtTexts
 
 
-class DataLoaderIAM:
-    "loads data which corresponds to IAM format, see: http://www.fki.inf.unibe.ch/databases/iam-handwriting-database"
+class DataLoaderSRUPHN:
+    "loads data which corresponds to IAM format, see: http://ebrahimpourlab.ir/download-dataset-sruphn/"
 
-    def __init__(self, data_dir, batchSize, imgSize, maxTextLen, fast=True):
+    def __init__(self, data_dir: Path, batchSize, imgSize, maxTextLen, fast=False):
         "loader for dataset at given location, preprocess images and text according to parameters"
 
         assert data_dir.exists()
@@ -45,29 +45,22 @@ class DataLoaderIAM:
 
         f = open(data_dir / 'gt/words.txt')
         chars = set()
-        bad_samples_reference = ['a01-117-05-02', 'r06-022-03-05']  # known broken images in IAM dataset
+        bad_samples_reference = []  # known broken images in SRU/PHN dataset
         for line in f:
             # ignore comment line
-            if not line or line[0] == '#':
-                continue
-
-            lineSplit = line.strip().split(' ')
-            assert len(lineSplit) >= 9
-
-            # filename: part1-part2-part3 --> part1/part1-part2/part1-part2-part3.png
-            fileNameSplit = lineSplit[0].split('-')
-            fileName = data_dir / 'img' / fileNameSplit[0] / f'{fileNameSplit[0]}-{fileNameSplit[1]}' / lineSplit[0] + '.png'
-
-            if lineSplit[0] in bad_samples_reference:
-                print('Ignoring known broken image:', fileName)
-                continue
+            if line:
+                filename, gtText = line.split(';')
+                if filename in bad_samples_reference:
+                    print('Ignoring known broken image:', filename)
+                    continue
+                filename = data_dir / 'img' / filename
 
             # GT text are columns starting at 9
-            gtText = self.truncateLabel(' '.join(lineSplit[8:]), maxTextLen)
+            gtText = self.truncateLabel(gtText, maxTextLen)
             chars = chars.union(set(list(gtText)))
 
             # put sample into list
-            self.samples.append(Sample(gtText, fileName))
+            self.samples.append(Sample(gtText, filename))
 
         # split into training and validation set: 95% - 5%
         splitIdx = int(0.95 * len(self.samples))
@@ -151,5 +144,5 @@ class DataLoaderIAM:
 
 
 if __name__ == '__main__':
-    dl = DataLoaderIAM('../data/', 50, (128, 32), 32)
+    dl = DataLoaderSRUPHN(Path('data/dataset'), 50, (128, 32), 32)
     dl.getNext()
