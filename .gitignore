@@ -11,3 +11,4 @@ data/true
 data/gt
 *bmp
 *true
+data/img/*.bmp
