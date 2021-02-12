@@ -5,7 +5,7 @@ import cv2
 import editdistance
 from path import Path
 
-from DataLoaderIAM import DataLoaderIAM, Batch
+from DataLoaderSRUPHN import DataLoaderSRUPHN, Batch
 from Model import Model, DecoderType
 from SamplePreprocessor import preprocess
 
@@ -132,7 +132,7 @@ def main():
     # train or validate on IAM dataset
     if args.train or args.validate:
         # load training data, create TF model
-        loader = DataLoaderIAM(args.data_dir, args.batch_size, Model.imgSize, Model.maxTextLen, args.fast)
+        loader = DataLoaderSRUPHN(args.data_dir, args.batch_size, Model.imgSize, Model.maxTextLen, args.fast)
 
         # save characters of model for inference mode
         open(FilePaths.fnCharList, 'w').write(str().join(loader.charList))
