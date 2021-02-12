@@ -9,3 +9,5 @@ dump/
 data/img
 data/true
 data/gt
+*bmp
+*true
