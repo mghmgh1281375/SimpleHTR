@@ -6,3 +6,6 @@ notes/
 *.pyc
 .idea/
 dump/
+data/img
+data/true
+data/gt
