@@ -144,5 +144,5 @@ class DataLoaderSRUPHN:
 
 
 if __name__ == '__main__':
-    dl = DataLoaderSRUPHN(Path('data/dataset'), 50, (128, 32), 32)
+    dl = DataLoaderSRUPHN(Path('data/'), 50, (128, 32), 32)
     dl.getNext()
